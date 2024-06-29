@@ -8,6 +8,6 @@ package manager;
  *
  * @author vungu
  */
-public class IMS {
+public class ScheduleManagerSystem {
     
 }
