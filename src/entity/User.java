@@ -8,6 +8,6 @@ package entity;
  *
  * @author vungu
  */
-public class Customer {
+public class User {
     
 }
