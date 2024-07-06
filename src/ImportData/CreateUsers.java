@@ -5,7 +5,9 @@
 package ImportData;
 
 import entity.User;
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
  *
  * @author vungu
  */
+
 public class CreateUsers {
     public static void main(String[] args) {
         Map<String, User> users = new HashMap<>();
@@ -22,11 +25,31 @@ public class CreateUsers {
         users.put("2", new User("2", "Bob", "bob@example.com", "0987654321", "password2"));
         users.put("3", new User("3", "Charlie", "charlie@example.com", "1122334455", "password3"));
 
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("users.txt"))) {
-            out.writeObject(users);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/users.txt"))) {
+            for (User user : users.values()) {
+                writer.write(user.toString());
+                writer.newLine();
+            }
             System.out.println("Users saved to file.");
         } catch (IOException e) {
             System.err.println("Error saving users: " + e.getMessage());
         }
     }
 }
+
+// save binary file
+//public class CreateUsers {
+//    public static void main(String[] args) {
+//        Map<String, User> users = new HashMap<>();
+//        users.put("1", new User("1", "Alice", "alice@example.com", "1234567890", "password1"));
+//        users.put("2", new User("2", "Bob", "bob@example.com", "0987654321", "password2"));
+//        users.put("3", new User("3", "Charlie", "charlie@example.com", "1122334455", "password3"));
+//
+//        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("src/data/users.txt"))) {
+//            out.writeObject(users);
+//            System.out.println("Users saved to file.");
+//        } catch (IOException e) {
+//            System.err.println("Error saving users: " + e.getMessage());
+//        }
+//    }
+//}

@@ -28,7 +28,7 @@ public class ScheduleManagerSystem {
     public ScheduleManagerSystem() {
     }
     
-    public static final String USERS_FILE = "users.txt";
+    public static final String USERS_FILE = "src/data/users.txt";
     public static Map<String, User> users = new HashMap<>();
     
     public static void loadUsers() {
