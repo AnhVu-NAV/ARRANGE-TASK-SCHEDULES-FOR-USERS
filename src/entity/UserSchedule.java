@@ -11,7 +11,9 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -136,5 +138,15 @@ public class UserSchedule implements Serializable {
         } catch (IOException e) {
             System.err.println("Error reading tasks from file: " + e.getMessage());
         }
+    }
+
+    public Vertex searchTaskByName(String taskName) {
+        return this.taskMap.get(taskName);
+    }
+
+    public List<Vertex> searchTasksByLabel(String taskLabel) {
+        return this.taskMap.values().stream()
+                .filter(vertex -> vertex.getLabel().equals(taskLabel))
+                .collect(Collectors.toList());
     }
 }
