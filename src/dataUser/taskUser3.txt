@@ -1,0 +1,2 @@
+Breakfast=Eat Breakfast,2024-07-01T08:00,2024-07-01T08:30
+Exercise=Morning Run,2024-07-01T09:00,2024-07-01T10:00

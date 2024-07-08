@@ -13,12 +13,12 @@ import java.util.*;
 import manager.ScheduleManagerSystem;
 /**
  *
- * @author vungu
+ * @author AnhVu
  */
 public class Main {
     public static void main(String[] args) {
         ScheduleManagerSystem manager = new ScheduleManagerSystem();
-        manager.loadUsers();  // Automatically load users from file when the program starts
+        manager.loadUsers();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -28,7 +28,7 @@ public class Main {
             System.out.println("4. Exit");
             System.out.print("Choose an option: ");
             int option = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            scanner.nextLine();
 
             switch (option) {
                 case 1:

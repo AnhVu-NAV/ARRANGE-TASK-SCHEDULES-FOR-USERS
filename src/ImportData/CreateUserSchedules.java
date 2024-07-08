@@ -17,7 +17,7 @@ import javafx.concurrent.Task;
 
 /**
  *
- * @author vungu
+ * @author AnhVu
  */
 public class CreateUserSchedules {
     public static void main(String[] args) {
@@ -52,14 +52,8 @@ public class CreateUserSchedules {
     }
 
     private static void saveSchedule(UserSchedule schedule) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/" + schedule.getUser().getId() + "_schedule.txt"))) {
-            writer.write(schedule.getUser().toString());
-            writer.newLine();
-            for (Task task : schedule.getTasks()) {
-                writer.write(task.toString());
-                writer.newLine();
-            }
-        }
+        //schedule.saveToFile();
+        schedule.saveTasksToFile();
     }
 }
 
@@ -97,8 +91,7 @@ public class CreateUserSchedules {
 //    }
 //
 //    private static void saveSchedule(UserSchedule schedule) throws IOException {
-//        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(schedule.getUser().getId() + ".txt"))) {
-//            out.writeObject(schedule);
-//        }
+//        schedule.saveToFile();
+//        schedule.saveTasksToFile();
 //    }
 //}

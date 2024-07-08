@@ -19,13 +19,15 @@ import java.util.Map;
  */
 
 public class CreateUsers {
+    public static final String USERS_FILE = "src/data/users.txt";
+
     public static void main(String[] args) {
         Map<String, User> users = new HashMap<>();
         users.put("1", new User("1", "Alice", "alice@example.com", "1234567890", "password1"));
         users.put("2", new User("2", "Bob", "bob@example.com", "0987654321", "password2"));
         users.put("3", new User("3", "Charlie", "charlie@example.com", "1122334455", "password3"));
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/users.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
             for (User user : users.values()) {
                 writer.write(user.toString());
                 writer.newLine();
