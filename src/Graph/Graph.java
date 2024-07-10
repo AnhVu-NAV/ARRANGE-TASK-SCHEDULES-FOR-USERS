@@ -2,9 +2,13 @@
 package Graph;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 
@@ -101,4 +105,101 @@ public class Graph implements Serializable {
                                " (Start: " + entry.getKey().getStartTime() + ", End: " + entry.getKey().getEndTime() + ")");
         }
     }
+    
+   // Depth First Search (DFS)
+    public void DFS(String startLabel) {
+        Vertex startVertex = getVertex(startLabel);
+        if (startVertex == null) return;
+        Set<Vertex> visited = new HashSet<>();
+        DFSUtil(startVertex, visited);
+    }
+
+    private void DFSUtil(Vertex vertex, Set<Vertex> visited) {
+        visited.add(vertex);
+        System.out.print(vertex.label + " ");
+        for (Vertex neighbor : vertex.adjList.keySet()) {
+            if (!visited.contains(neighbor)) {
+                DFSUtil(neighbor, visited);
+            }
+        }
+    }
+
+    // Breadth First Search (BFS)
+    public void BFS(String startLabel) {
+        Vertex startVertex = getVertex(startLabel);
+        if (startVertex == null) return;
+        Set<Vertex> visited = new HashSet<>();
+        Queue<Vertex> queue = new LinkedList<>();
+        queue.add(startVertex);
+        visited.add(startVertex);
+        while (!queue.isEmpty()) {
+            Vertex vertex = queue.poll();
+            System.out.print(vertex.label + " ");
+            for (Vertex neighbor : vertex.adjList.keySet()) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+        }
+    }
+
+    // Dijkstra's Algorithm for Shortest Path
+    public Map<Vertex, Integer> dijkstra(String startLabel) {
+        Vertex startVertex = getVertex(startLabel);
+        if (startVertex == null) return null;
+
+        Map<Vertex, Integer> distances = new HashMap<>();
+        for (Vertex v : vertices) {
+            distances.put(v, Integer.MAX_VALUE);
+        }
+        distances.put(startVertex, 0);
+
+        PriorityQueue<Vertex> pq = new PriorityQueue<>(Comparator.comparingInt(distances::get));
+        pq.add(startVertex);
+
+        while (!pq.isEmpty()) {
+            Vertex current = pq.poll();
+            for (Map.Entry<Vertex, Integer> neighborEntry : current.adjList.entrySet()) {
+                Vertex neighbor = neighborEntry.getKey();
+                int edgeWeight = neighborEntry.getValue();
+                int newDist = distances.get(current) + edgeWeight;
+                if (newDist < distances.get(neighbor)) {
+                    distances.put(neighbor, newDist);
+                    pq.add(neighbor);
+                }
+            }
+        }
+        return distances;
+    }
+
+    // Cycle Detection using DFS
+    public boolean hasCycle() {
+        Set<Vertex> visited = new HashSet<>();
+        Set<Vertex> recStack = new HashSet<>();
+        for (Vertex vertex : vertices) {
+            if (hasCycleUtil(vertex, visited, recStack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCycleUtil(Vertex vertex, Set<Vertex> visited, Set<Vertex> recStack) {
+        if (recStack.contains(vertex)) {
+            return true;
+        }
+        if (visited.contains(vertex)) {
+            return false;
+        }
+        visited.add(vertex);
+        recStack.add(vertex);
+        for (Vertex neighbor : vertex.adjList.keySet()) {
+            if (hasCycleUtil(neighbor, visited, recStack)) {
+                return true;
+            }
+        }
+        recStack.remove(vertex);
+        return false;
+    } 
 }
