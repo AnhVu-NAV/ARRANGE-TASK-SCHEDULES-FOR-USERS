@@ -120,9 +120,9 @@ public class Graph implements Serializable {
 
         while (!queue.isEmpty()) {
             Vertex current = queue.dequeue();
-            System.out.print(current.label + " ");
+            System.out.print(current.getLabel() + " ");
 
-            current.adjList.entrySet().stream()
+            current.getAdjList().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Comparator.comparing(Vertex::getLabel)))
                     .forEach(entry -> {
                         Vertex neighbor = entry.getKey();
@@ -150,10 +150,10 @@ public class Graph implements Serializable {
         while (!stack.isEmpty()) {
             Vertex current = stack.pop();
             if (!visited.contains(current)) {
-                System.out.print(current.label + " ");
+                System.out.print(current.getLabel() + " ");
                 visited.add(current);
 
-                current.adjList.entrySet().stream()
+                current.getAdjList().entrySet().stream()
                         .sorted(Map.Entry.comparingByKey(Comparator.comparing(Vertex::getLabel).reversed()))
                         .forEach(entry -> stack.push(entry.getKey()));
             }
@@ -176,7 +176,7 @@ public class Graph implements Serializable {
 
         while (!queue.isEmpty()) {
             Vertex current = queue.poll();
-            for (Map.Entry<Vertex, Integer> entry : current.adjList.entrySet()) {
+            for (Map.Entry<Vertex, Integer> entry : current.getAdjList().entrySet()) {
                 Vertex neighbor = entry.getKey();
                 int newDist = distance.get(current) + entry.getValue();
                 if (newDist < distance.get(neighbor)) {
@@ -209,24 +209,24 @@ public class Graph implements Serializable {
         return Collections.emptyList();
     }
 
-    public Graph primJanik(Graph g, String start) {
+    public Graph primJanik(String start) {
         Graph mst = new Graph();
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparing(Edge::getWeight));
         Set<Vertex> visited = new HashSet<>();
-        Vertex startVertex = g.getVertex(start);
+        Vertex startVertex = this.getVertex(start);
         if (startVertex == null) {
             System.out.println("Start vertex not found");
             return mst;
         }
         visited.add(startVertex);
-        startVertex.adjList.forEach((adjVertex, weight) -> priorityQueue.add(new Edge(startVertex, adjVertex, weight)));
+        startVertex.getAdjList().forEach((adjVertex, weight) -> priorityQueue.add(new Edge(startVertex, adjVertex, weight)));
 
         while (!priorityQueue.isEmpty()) {
             Edge minEdge = priorityQueue.poll();
             if (!visited.contains(minEdge.to)) {
-                mst.addEdgeBidirectional(minEdge.from.label, minEdge.to.label, minEdge.weight);
+                mst.addEdgeBidirectional(minEdge.from.getLabel(), minEdge.to.getLabel(), minEdge.weight);
                 visited.add(minEdge.to);
-                minEdge.to.adjList.forEach((adjVertex, weight) -> {
+                minEdge.to.getAdjList().forEach((adjVertex, weight) -> {
                     if (!visited.contains(adjVertex)) {
                         priorityQueue.add(new Edge(minEdge.to, adjVertex, weight));
                     }
@@ -236,16 +236,16 @@ public class Graph implements Serializable {
         return mst;
     }
 
-    public List<String> getEulerianPathStartingVertices(Graph graph) {
+    public List<String> getEulerianPathStartingVertices() {
         List<String> startingVertices = new ArrayList<>();
         List<String> startVerticePath = new ArrayList<>();
         int oddDegreeCount = 0;
 
-        for (Vertex vertex : graph.vertices) {
-            startingVertices.add(vertex.label);
-            if (vertex.adjList.size() % 2 != 0) {
+        for (Vertex vertex : this.vertices) {
+            startingVertices.add(vertex.getLabel());
+            if (vertex.getAdjList().size() % 2 != 0) {
                 oddDegreeCount++;
-                startVerticePath.add(vertex.label);
+                startVerticePath.add(vertex.getLabel());
             }
         }
 

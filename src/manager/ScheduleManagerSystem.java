@@ -6,7 +6,7 @@ package manager;
 
 import Graph.Vertex;
 import entity.User;
-import entity.UserSchedule;
+import entity.Schedule;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -28,12 +28,11 @@ import java.util.Scanner;
  * @author AnhVu
  */
 public class ScheduleManagerSystem {
-
-    public ScheduleManagerSystem() {
-    }
-
     public static final String USERS_FILE = "src/data/users.txt";
     public static Map<String, User> users = new HashMap<>();
+    private static Schedule schedule = new Schedule();
+
+    public ScheduleManagerSystem() {}
 
     public static void loadUsers() {
         try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
@@ -78,36 +77,24 @@ public class ScheduleManagerSystem {
         System.out.println("User added successfully.");
     }
 
-    public static void manageUserTasks(Scanner scanner) {
+    public static User getUser(String userId) {
+        return users.get(userId);
+    }
+
+    public static Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void manageTasks(Scanner scanner) {
         System.out.print("Enter user ID: ");
         String userId = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        User user = users.get(userId);
-
+        User user = getUser(userId);
         if (user == null || !user.verifyPassword(password)) {
             System.out.println("User not found or incorrect password.");
-            System.out.print("Do you want to add a new user? (yes/no): ");
-            String response = scanner.nextLine();
-            if (response.equalsIgnoreCase("yes")) {
-                addUser(scanner);
-                user = users.get(userId);
-            } else {
-                System.out.println("Returning to main menu.");
-                return;
-            }
-        }
-
-        UserSchedule userSchedule;
-        try {
-            userSchedule = UserSchedule.loadFromFile(userId);
-            userSchedule.loadTasksFromFile();
-            System.out.println("Tasks for user " + userId + ":");
-            userSchedule.displaySchedule();
-        } catch (IOException e) {
-            userSchedule = new UserSchedule(user);
-            System.out.println("No tasks found for user " + userId + ".");
+            return;
         }
 
         while (true) {
@@ -120,19 +107,12 @@ public class ScheduleManagerSystem {
 
             switch (option) {
                 case 1:
-                    addTask(scanner, userSchedule);
+                    addTask(scanner, userId);
                     break;
                 case 2:
-                    removeTask(scanner, userSchedule);
+                    removeTask(scanner, userId);
                     break;
                 case 3:
-                    try {
-                        userSchedule.saveToFile();
-                        userSchedule.saveTasksToFile();
-                    } catch (IOException e) {
-                        System.err.println("Error saving schedule: " + e.getMessage());
-                    }
-                    System.out.println("Returning to main menu.");
                     return;
                 default:
                     System.out.println("Invalid option, please try again.");
@@ -140,10 +120,10 @@ public class ScheduleManagerSystem {
         }
     }
 
-    private static void addTask(Scanner scanner, UserSchedule userSchedule) {
+    private void addTask(Scanner scanner, String userId) {
         System.out.print("Enter task name: ");
         String taskName = scanner.nextLine();
-        if (userSchedule.getTaskMap().containsKey(taskName)) {
+        if (getSchedule().getTaskMap().containsKey(taskName)) {
             System.out.println("Task with this name already exists. Please choose a different name.");
             return;
         }
@@ -172,48 +152,19 @@ public class ScheduleManagerSystem {
             return;
         }
 
-        if (hasConflict(userSchedule, startTime, endTime)) {
+        if (getSchedule().hasConflict(startTime, endTime)) {
             System.out.println("This task conflicts with an existing task. Please choose a different time.");
             return;
         }
 
-        userSchedule.addTask(taskName, taskLabel, startTime, endTime);
+        getSchedule().addTask(userId, taskName, taskLabel, startTime, endTime);
         System.out.println("Task added successfully.");
     }
 
-    private static void removeTask(Scanner scanner, UserSchedule userSchedule) {
+    private void removeTask(Scanner scanner, String userId) {
         System.out.print("Enter task name: ");
         String taskName = scanner.nextLine();
-        userSchedule.removeTask(taskName);
+        getSchedule().removeTask(userId, taskName);
         System.out.println("Task removed successfully.");
-    }
-
-    private static boolean hasConflict(UserSchedule userSchedule, LocalDateTime startTime, LocalDateTime endTime) {
-        for (Vertex vertex : userSchedule.getScheduleGraph().getVertices()) {
-            if (vertex.getStartTime().isBefore(endTime) && startTime.isBefore(vertex.getEndTime())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void exportUserSchedule(Scanner scanner) {
-        System.out.print("Enter user ID: ");
-        String userId = scanner.nextLine();
-        User user = users.get(userId);
-
-        if (user == null) {
-            System.out.println("User not found.");
-            return;
-        }
-
-        UserSchedule userSchedule;
-        try {
-            userSchedule = UserSchedule.loadFromFile(userId);
-            userSchedule.saveTasksToFile();
-            System.out.println("User schedule exported successfully.");
-        } catch (IOException e) {
-            System.out.println("No schedule found for user.");
-        }
     }
 }
