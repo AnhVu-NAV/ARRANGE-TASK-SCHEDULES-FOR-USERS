@@ -1,3 +1,7 @@
 1, Alice, alice@example.com, 1234567890, 7c6a180b36896a0a8c02787eeafb0e4c
 2, Bob, bob@example.com, 0987654321, 6cb75f652a9b52798eb6cf2201057c73
 3, Charlie, charlie@example.com, 1122334455, 819b0643d6b89dc9b579fdfc9094f28e
+u1, Alice, alice@example.com, 1234567890, 7c6a180b36896a0a8c02787eeafb0e4c
+u2, Bob, bob@example.com, 0987654321, 6cb75f652a9b52798eb6cf2201057c73
+u3, Charlie, charlie@example.com, 1122334455, 819b0643d6b89dc9b579fdfc9094f28e
+u4, David, david@example.com, 2233445566, 34cc93ece0ba9e3f6f235d4af979b16c

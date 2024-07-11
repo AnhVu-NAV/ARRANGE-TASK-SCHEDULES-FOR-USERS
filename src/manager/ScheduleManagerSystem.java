@@ -22,17 +22,20 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  *
  * @author AnhVu
  */
 public class ScheduleManagerSystem {
+
     public static final String USERS_FILE = "src/data/users.txt";
     public static Map<String, User> users = new HashMap<>();
     private static Schedule schedule = new Schedule();
 
-    public ScheduleManagerSystem() {}
+    public ScheduleManagerSystem() {
+    }
 
     public static void loadUsers() {
         try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
@@ -57,6 +60,41 @@ public class ScheduleManagerSystem {
             System.err.println("Error saving users: " + e.getMessage());
         }
     }
+
+    public static void loadSchedules() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/data/schedules.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                String userId = parts[0];
+                String taskName = parts[1];
+                String taskLabel = parts[2];
+                LocalDateTime startTime = LocalDateTime.parse(parts[3]);
+                LocalDateTime endTime = LocalDateTime.parse(parts[4]);
+                schedule.addTask(userId, taskName, taskLabel, startTime, endTime);
+            }
+            System.out.println("Schedules loaded from file.");
+        } catch (IOException e) {
+            System.out.println("No schedules file found, starting with an empty schedule list.");
+        }
+    }
+
+    public static void saveSchedules() {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/schedules.txt"))) {
+        for (Map.Entry<String, Set<String>> userTasksEntry : schedule.getUserTasks().entrySet()) {
+            String userId = userTasksEntry.getKey();
+            for (String taskName : userTasksEntry.getValue()) {
+                Vertex task = schedule.getTaskMap().get(taskName);
+                if (task != null) {
+                    writer.write(userId + ";" + taskName + ";" + task.getLabel() + ";" + task.getStartTime() + ";" + task.getEndTime() + "\n");
+                }
+            }
+        }
+        System.out.println("Schedules saved to file.");
+    } catch (IOException e) {
+        System.err.println("Error saving schedules: " + e.getMessage());
+    }
+}
 
     public static void addUser(Scanner scanner) {
         System.out.print("Enter user ID: ");

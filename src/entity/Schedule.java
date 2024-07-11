@@ -73,6 +73,10 @@ public class Schedule implements Serializable {
     public Map<String, Vertex> getTaskMap() {
         return taskMap;
     }
+    
+    public Map<String, Set<String>> getUserTasks() {
+        return userTasks;
+    }
 
     public Graph getScheduleGraph() {
         return scheduleGraph;
