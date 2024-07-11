@@ -4,6 +4,7 @@
 Hệ thống này được thiết kế để quản lý lịch trình nhiệm vụ của nhiều người dùng, đảm bảo rằng không có sự trùng lặp giữa các nhiệm vụ của các người dùng khác nhau. Hệ thống sử dụng cấu trúc dữ liệu đồ thị (Graph) để biểu diễn các nhiệm vụ và mối quan hệ xung đột giữa chúng.
 
 <b>Các thành phần chính:</b>
+
 Người dùng (User): Mỗi người dùng có một ID duy nhất, tên, email, số điện thoại và mật khẩu được mã hóa.
 
 Nhiệm vụ (Task): Mỗi nhiệm vụ được biểu diễn dưới dạng một đỉnh (vertex) trong đồ thị. Một nhiệm vụ bao gồm tên, nhãn, thời gian bắt đầu và kết thúc.
